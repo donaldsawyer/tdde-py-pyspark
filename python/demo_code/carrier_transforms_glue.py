@@ -11,10 +11,10 @@ from awsglue.context import GlueContext
 def add_effective_year_range(record):
     try:
         record['effective_start_year'], record['effective_end_year'] = futil.get_year_range(record['description'])
-        # if record['effective_start_year'] == None:
-        #     record['effective_start_year'] = 1900
-        # if record['effective_end_year'] == None:
-        #     record['effective_end_year'] = 9999
+        if record['effective_start_year'] == None:
+            record['effective_start_year'] = 1900
+        if record['effective_end_year'] == None:
+            record['effective_end_year'] = 9999
     except:
         record['effective_start_year'], record['effective_end_year'] = [-1, -1]
     
