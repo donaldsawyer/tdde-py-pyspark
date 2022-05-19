@@ -8,6 +8,18 @@ Here are some helpful resources that are worth perusing.
 * One [blog on remote containers with VS Code](https://cevo.com.au/post/aws-glue-local-development/)
 * [Remote python with VS Code](https://devblogs.microsoft.com/python/remote-python-development-in-visual-studio-code/)
 
+## Demo Overview
+The code used in this demo represent three different types of use cases that come up in data engineering:
+ 1. Single-threaded code (python)
+ 1. Distributed code (PySpark)
+ 1. Cloud framework code (AWS Glue)
+
+*The specific technologies chosen are less important because the concepts, challenges and potential solutions follow the same path. Instead of python, scala, Java, or R could have been chosen, or instead of PySpark, Spark with Java/scala, or SparkR could have been used.*
+
+### Demo Path
+
+
+
 ## Machine Setup
 The following tools and extensions are needed for this setup (these are the versions used for this demo):
 
@@ -96,3 +108,4 @@ Using the `Remote - Containers` extension, you can connect to a docker image. On
 ![Remote Explorer](./images/remote_explorer.png)
 
 With the new connected window that is opened up, you can do development and run code from within the IDE.
+
