@@ -15,10 +15,21 @@ The challenge here is that if there is an assertion error, what is the failed te
 @pytest.mark.skip()
 def test_get_start_year_valid_ranges(spark_session):
     # given
+    ''' INPUT DATAFRAME
+    |----------|---------------------------------|
+    | expected | input_str                       |
+    |----------|---------------------------------|
+    |   2016   | Carrier (2016 - 2020)           |
+    |   2016   | Carrier (2016 - )               |
+    |   None   | Carrier ( - 2016)               |
+    |   2010   | Carrier (carrier) (2010 - 2016) |
+    |   None   | Carrier ( - )                   |
+    |----------|---------------------------------|
+    '''
     sut_df: DataFrame = spark_session.createDataFrame(
         [
             (2016, 'Carrier (2016 - 2020)'),
-            (2016,'Carrier (2016 - )'),
+            (2016, 'Carrier (2016 - )'),
             (None, 'Carrier ( - 2016)'),
             (2010, 'Carrier (carrier) (2010 - 2016)'),
             (None, 'Carrier ( - )')
@@ -27,6 +38,17 @@ def test_get_start_year_valid_ranges(spark_session):
     )
 
     # when
+    ''' ACTUAL DATAFRAME
+    |----------|---------------------------------|------------|
+    | expected | input_str                       | actual     |
+    |----------|---------------------------------|------------|
+    |   2016   | Carrier (2016 - 2020)           |    ????    |
+    |   2016   | Carrier (2016 - )               |    ????    |
+    |   None   | Carrier ( - 2016)               |    ????    |
+    |   2010   | Carrier (carrier) (2010 - 2016) |    ????    |
+    |   None   | Carrier ( - )                   |    ????    |
+    |----------|---------------------------------|------------|
+    '''
     result_df = sut_df.\
         withColumn("actual", ct.get_start_year(col("input_str"))).\
         select('expected', 'actual')
@@ -38,6 +60,15 @@ def test_get_start_year_valid_ranges(spark_session):
 @pytest.mark.skip()
 def test_get_start_year_invalid_formats(spark_session):
     # given
+    ''' INPUT DATAFRAME
+    |----------|---------------------------------|
+    | expected | input_str                       |
+    |----------|---------------------------------|
+    |    -1    | Carrier                         |
+    |    -1    | Carrier (2016 - 2022            |
+    |    -1    | Carrier 2016 - 2022)            |
+    |----------|---------------------------------|
+    '''
     sut_df: DataFrame = spark_session.createDataFrame(
         [
             (-1, 'Carrier'),
@@ -47,6 +78,15 @@ def test_get_start_year_invalid_formats(spark_session):
         ["expected", "input_str"])
 
     # when
+    ''' ACTUAL DATAFRAME
+    |----------|---------------------------------|--------|
+    | expected | input_str                       | actual |
+    |----------|---------------------------------|--------|
+    |    -1    | Carrier                         |  ????  |
+    |    -1    | Carrier (2016 - 2022            |  ????  |
+    |    -1    | Carrier 2016 - 2022)            |  ????  |
+    |----------|---------------------------------|--------|
+    '''
     result_df = sut_df.\
         withColumn("actual", ct.get_start_year(col("input_str"))).\
         select('expected', 'actual')
@@ -58,6 +98,20 @@ def test_get_start_year_invalid_formats(spark_session):
 @pytest.mark.skip()
 def test_get_end_year_all_formats(spark_session):
     # given
+    ''' INPUT DATAFRAME
+    |----------|---------------------------------|
+    | expected | input_str                       |
+    |----------|---------------------------------|
+    |   2020   | Carrier (2016 - 2020)           |
+    |   None   | Carrier (2016 - )               |
+    |   2016   | Carrier ( - 2016)               |
+    |   2016   | Carrier (carrier) (2010 - 2016) |
+    |   None   | Carrier ( - )                   |
+    |    -1    | Carrier                         |
+    |    -1    | Carrier (2016 - 2022            |
+    |    -1    | Carrier 2016 - 2022)            |
+    |----------|---------------------------------|
+    '''
     sut_df: DataFrame = spark_session.createDataFrame(
         [
             (2020, 'Carrier (2016 - 2020)'),
@@ -72,6 +126,20 @@ def test_get_end_year_all_formats(spark_session):
         ["expected", "input_str"])
 
     # when
+    ''' ACTUAL DATAFRAME
+    |----------|---------------------------------|------------|
+    | expected | input_str                       | actual     |
+    |----------|---------------------------------|------------|
+    |   2020   | Carrier (2016 - 2020)           |    ????    |
+    |   None   | Carrier (2016 - )               |    ????    |
+    |   2016   | Carrier ( - 2016)               |    ????    |
+    |   2016   | Carrier (carrier) (2010 - 2016) |    ????    |
+    |   None   | Carrier ( - )                   |    ????    |
+    |    -1    | Carrier                         |    ????    |
+    |    -1    | Carrier (2016 - 2022            |    ????    |
+    |    -1    | Carrier 2016 - 2022)            |    ????    |
+    |----------|---------------------------------|------------|
+    '''
     result_df = sut_df.\
         withColumn("actual", ct.get_end_year(col("input_str"))).\
         select('expected', 'actual')

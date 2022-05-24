@@ -68,7 +68,7 @@ def test_add_effective_year_range_blank_2016():
     assert(sut['effective_end_year'] == 2016)
 
 
-def test_add_effective_year_range_multiple_left_parentheses():
+def test_add_effective_year_range_multiple_left_parenthesis():
     # given
     sut = {'description': 'Carrier (carrier) (2010 - 2016)'}
 
@@ -130,7 +130,7 @@ def test_add_effective_year_range_no_left_parenthesis():
 ############################
 # GLUE TRANSFORMATION TESTS
 ############################
-@pytest.mark.skip()
+# @pytest.mark.skip()
 def assert_dataframes_equal(expected_df: DataFrame, actual_df: DataFrame):
     # ensure no columns added or removed unexpectedly
     assert(expected_df.columns == actual_df.columns)
@@ -144,14 +144,31 @@ def assert_dataframes_equal(expected_df: DataFrame, actual_df: DataFrame):
     # all rows in the actual_df are in the expected_df (actual_df <= expected_df)
     assert(actual_df.subtract(expected_df).rdd.isEmpty())
 
+
 @pytest.mark.skip()
 def test_processYearRange_valid_twoYears(spark_session, glue_context, carrier_input_schema, carrier_output_schema):
     # given
+    ''' INPUT DATAFRAME
+    |------|---------------------------------|
+    | code | description                     |
+    |------|---------------------------------|
+    | C01  | Carrier (2016 - 2020)           |
+    | C04  | Carrier (carrier) (2010 - 2016) |
+    |------|---------------------------------|
+    '''
     input_data = [
         ('C01', 'Carrier (2016 - 2020)'),
         ('C04', 'Carrier (carrier) (2010 - 2016)')]
     input_df = spark_session.createDataFrame(data=input_data, schema=carrier_input_schema)
 
+    ''' EXPECTED OUTPUT DATAFRAME
+    |------|---------------------------------|----------------------|--------------------|
+    | code | description                     | effective_start_year | effective_end_year |
+    |------|---------------------------------|----------------------|--------------------|
+    | C01  | Carrier (2016 - 2020)           |         2016         |        2020        |
+    | C04  | Carrier (carrier) (2010 - 2016) |         2010         |        2016        |
+    |------|---------------------------------|----------------------|--------------------|
+    '''
     expected_df = spark_session.createDataFrame(
         data=[
             ('C01', 'Carrier (2016 - 2020)', 2016, 2020),
@@ -165,9 +182,19 @@ def test_processYearRange_valid_twoYears(spark_session, glue_context, carrier_in
     # then
     assert_dataframes_equal(expected_df, actual_df)
 
+
 @pytest.mark.skip()
 def test_processYearRange_valid_missingYears(spark_session, glue_context, carrier_input_schema, carrier_output_schema):
     # given
+    ''' INPUT DATAFRAME
+    |------|-------------------|
+    | code | description       |
+    |------|-------------------|
+    | C02  | Carrier (2016 - ) |
+    | C03  | Carrier ( - 2016) |
+    | C05  | Carrier ( - )     |
+    |------|-------------------|
+    '''
     input_data = [
         ('C02', 'Carrier (2016 - )'),
         ('C03', 'Carrier ( - 2016)'),
@@ -175,6 +202,15 @@ def test_processYearRange_valid_missingYears(spark_session, glue_context, carrie
     ]
     input_df = spark_session.createDataFrame(data=input_data, schema=carrier_input_schema)
 
+    ''' EXPECTED OUTPUT DATAFRAME
+    |------|-------------------|----------------------|--------------------|
+    | code | description       | effective_start_year | effective_end_year |
+    |------|-------------------|----------------------|--------------------|
+    | C02  | Carrier (2016 - ) |         2016         |        9999        |
+    | C03  | Carrier ( - 2016) |         1900         |        2016        |
+    | C05  | Carrier ( - )     |         1900         |        9999        |
+    |------|-------------------|----------------------|--------------------|
+    '''
     expected_df = spark_session.createDataFrame(
         data=[
             ('C02', 'Carrier (2016 - )', 2016, 9999),
@@ -188,9 +224,19 @@ def test_processYearRange_valid_missingYears(spark_session, glue_context, carrie
     # then
     assert_dataframes_equal(expected_df, actual_df)
 
+
 @pytest.mark.skip()
 def test_processYearRange_invalid_cannotParse(spark_session, glue_context, carrier_input_schema, carrier_output_schema):
     # given
+    ''' INPUT DATAFRAME
+    |------|----------------------|
+    | code | description          |
+    |------|----------------------|
+    | C06  | Carrier              |
+    | C07  | Carrier (2016 - 2022 |
+    | C07  | Carrier 2016 - 2022) |
+    |------|----------------------|
+    '''
     input_data = [
         ('C06', 'Carrier'),
         ('C07', 'Carrier (2016 - 2022'),
@@ -198,6 +244,15 @@ def test_processYearRange_invalid_cannotParse(spark_session, glue_context, carri
     ]
     input_df = spark_session.createDataFrame(data=input_data, schema=carrier_input_schema)
 
+    ''' EXPECTED OUTPUT DATAFRAME
+    |------|----------------------|----------------------|--------------------|
+    | code | description          | effective_start_year | effective_end_year |
+    |------|----------------------|----------------------|--------------------|
+    | C06  | Carrier              |          -1          |         -1         |
+    | C07  | Carrier (2016 - 2022 |          -1          |         -1         |
+    | C07  | Carrier 2016 - 2022) |          -1          |         -1         |
+    |------|----------------------|----------------------|--------------------|
+    '''
     expected_df = spark_session.createDataFrame(
         data=[
             ('C06', 'Carrier', -1, -1),

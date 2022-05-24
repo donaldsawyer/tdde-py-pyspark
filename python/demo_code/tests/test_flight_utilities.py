@@ -1,6 +1,7 @@
 import flight_utilities as sut
 import pytest
 
+
 def test_get_year_range_2016_2020():
     # given
     sut_input = 'Carrier (2016 - 2020)'
@@ -11,6 +12,7 @@ def test_get_year_range_2016_2020():
 
     # then
     assert expected == actual
+
 
 def test_get_year_range_2016_blank():
     # given
@@ -23,6 +25,7 @@ def test_get_year_range_2016_blank():
     # then
     assert expected == actual
 
+
 def test_get_year_range_blank_2016():
     # given
     sut_input = 'Carrier ( - 2016)'
@@ -33,6 +36,7 @@ def test_get_year_range_blank_2016():
 
     # then
     assert expected == actual
+
 
 def test_get_year_range_multiple_left_parentheses():
     # given
@@ -45,6 +49,7 @@ def test_get_year_range_multiple_left_parentheses():
     # then
     assert expected == actual
 
+
 def test_get_year_range_no_years():
     # given
     sut_input = 'Carrier ( - )'
@@ -56,6 +61,7 @@ def test_get_year_range_no_years():
     # then
     assert expected == actual
 
+
 def test_get_year_range_no_range():
     # given
     sut_input = 'Carrier'
@@ -64,6 +70,7 @@ def test_get_year_range_no_range():
     with pytest.raises(ValueError, match=r"No year range was found in ."):
         actual = sut.get_year_range(sut_input)
 
+
 def test_get_year_range_no_right_parenthesis():
     # given
     sut_input = 'Carrier (2016 - 2022'
@@ -71,6 +78,7 @@ def test_get_year_range_no_right_parenthesis():
     # when / then (exception)
     with pytest.raises(ValueError, match=r"No year range was found in ."):
         actual = sut.get_year_range(sut_input)
+
 
 def test_get_year_range_no_left_parenthesis():
     # given

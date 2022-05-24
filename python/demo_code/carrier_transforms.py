@@ -17,10 +17,16 @@ get_start_year = udf(lambda s: get_year_range_no_errors(s)[0], IntegerType())
 get_end_year = udf(lambda s: get_year_range_no_errors(s)[1], IntegerType())
 
 
+# TDDE: BEFORE
 def processYearRange(carrier_df: DataFrame):
-    df = carrier_df.\
-        withColumn('effective_start_year', get_start_year(col('description'))). \
-        withColumn('effective_end_year', get_end_year(col('description'))). \
-        select('code', 'description', 'effective_start_year', 'effective_end_year')
+    return None
 
-    return df
+
+# TDDE: AFTER
+# def processYearRange(carrier_df: DataFrame):
+#     df = carrier_df.\
+#         withColumn('effective_start_year', get_start_year(col('description'))). \
+#         withColumn('effective_end_year', get_end_year(col('description'))). \
+#         select('code', 'description', 'effective_start_year', 'effective_end_year')
+
+#     return df
