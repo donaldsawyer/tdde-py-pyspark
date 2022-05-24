@@ -8,21 +8,21 @@ from awsglue.dynamicframe import DynamicFrame
 from awsglue.context import GlueContext
 
 # TDD: BEFORE
-def add_effective_year_range(record):
-    return [None, None]
+# def add_effective_year_range(record):
+#     return [None, None]
 
 # TDD: AFTER
-# def add_effective_year_range(record):
-#     try:
-#         record['effective_start_year'], record['effective_end_year'] = futil.get_year_range(record['description'])
-#         if record['effective_start_year'] == None:
-#             record['effective_start_year'] = 1900
-#         if record['effective_end_year'] == None:
-#             record['effective_end_year'] = 9999
-#     except:
-#         record['effective_start_year'], record['effective_end_year'] = [-1, -1]
+def add_effective_year_range(record):
+    try:
+        record['effective_start_year'], record['effective_end_year'] = futil.get_year_range(record['description'])
+        if record['effective_start_year'] == None:
+            record['effective_start_year'] = 1900
+        if record['effective_end_year'] == None:
+            record['effective_end_year'] = 9999
+    except:
+        record['effective_start_year'], record['effective_end_year'] = [-1, -1]
     
-#     return record
+    return record
 
 
 # TDDE: BEFORE
@@ -31,11 +31,11 @@ def processYearRange(carrier_df: DataFrame, glue_ctx: GlueContext) -> DataFrame:
 
 
 # TDDE: AFTER
-# def processYearRange(carrier_df: DataFrame, glue_ctx: GlueContext) -> DataFrame:
-#     dyf_carrier = DynamicFrame.fromDF(carrier_df, glue_ctx, 'Carriers')
+def processYearRange(carrier_df: DataFrame, glue_ctx: GlueContext) -> DataFrame:
+    dyf_carrier = DynamicFrame.fromDF(carrier_df, glue_ctx, 'Carriers')
     
-#     dyf_carrier_with_years = Map.apply(dyf_carrier, f = add_effective_year_range)
+    dyf_carrier_with_years = Map.apply(dyf_carrier, f = add_effective_year_range)
 
-#     return SelectFields.apply(dyf_carrier_with_years,
-#         paths=['code', 'description', 'effective_start_year', 'effective_end_year']
-#         ).toDF()
+    return SelectFields.apply(dyf_carrier_with_years,
+        paths=['code', 'description', 'effective_start_year', 'effective_end_year']
+        ).toDF()

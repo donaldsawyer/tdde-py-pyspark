@@ -12,7 +12,7 @@ This test demonstrates using a dataframe to test using a data-based test, simila
 The data and expected results are in the input DataFrame, and the actual results will be appended as a column.
 The challenge here is that if there is an assertion error, what is the failed test case?
 '''
-@pytest.mark.skip()
+# @pytest.mark.skip()
 def test_get_start_year_valid_ranges(spark_session):
     # given
     ''' INPUT DATAFRAME
@@ -57,7 +57,7 @@ def test_get_start_year_valid_ranges(spark_session):
     failure_df = result_df.where(col("actual") != col("expected"))
     assert(failure_df.rdd.isEmpty())
 
-@pytest.mark.skip()
+# @pytest.mark.skip()
 def test_get_start_year_invalid_formats(spark_session):
     # given
     ''' INPUT DATAFRAME
@@ -95,7 +95,7 @@ def test_get_start_year_invalid_formats(spark_session):
     failure_df = result_df.where(col("actual") != col("expected"))
     assert(failure_df.rdd.isEmpty())
 
-@pytest.mark.skip()
+# @pytest.mark.skip()
 def test_get_end_year_all_formats(spark_session):
     # given
     ''' INPUT DATAFRAME

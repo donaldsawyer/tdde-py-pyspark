@@ -17,7 +17,32 @@ The code used in this demo represent three different types of use cases that com
 *The specific technologies chosen are less important because the concepts, challenges and potential solutions follow the same path. Instead of python, scala, Java, or R could have been chosen, or instead of PySpark, Spark with Java/scala, or SparkR could have been used.*
 
 ### Demo Path
+The demo follows the path below.
 
+![demo path](./images/demo-path.png)
+
+|Step|Description|
+|--|--|
+|Anatomy of a Data Test|Overview of the parts of a data test.|
+|Environment|Description of the Docker setup and how to connect it to VS Code for use as the python interpreter.|
+|Python Data Engineering|Two common data engineering needs in python: a function that runs some business logic, and manipulating a dataframe.|
+|Transformations with Dataframes|Manipulating
+
+## TDDE Fundamentals: Anatomy of a Data Test
+
+## Single-Threaded TDDE (Python)
+
+
+
+## Distributed TDDE (PySpark and AWS Glue)
+
+1. Fixtures
+
+It's not perfect
+* fixtures aren't typed the same, so might not get intellisense
+* pytest is difficult to configure to run from VS Code, much harder than pycharm
+
+## Cloud TDDE (AWS Glue)
 
 
 ## Machine Setup
@@ -66,7 +91,7 @@ Notice in the command below the two `--volume` arguments. The `.aws` one is opti
 
 ```bash
 docker run \
-  --name "/glue_cmd" \
+  --name "glue_cmd" \
   --runtime "runc" \
   --volume "/Users/donaldsawyer/.aws:/home/glue_user/.aws" \
   --volume "/Users/donaldsawyer/git/tdde-py-pyspark:/home/glue_user/demo_code" \
@@ -108,4 +133,3 @@ Using the `Remote - Containers` extension, you can connect to a docker image. On
 ![Remote Explorer](./images/remote_explorer.png)
 
 With the new connected window that is opened up, you can do development and run code from within the IDE.
-

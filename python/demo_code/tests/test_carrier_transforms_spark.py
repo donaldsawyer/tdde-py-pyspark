@@ -37,7 +37,7 @@ def assert_dataframes_equal(expected_df: DataFrame, actual_df: DataFrame):
     assert(actual_df.subtract(expected_df).rdd.isEmpty())
 
 
-@pytest.mark.skip()
+# @pytest.mark.skip()
 def test_processYearRange_valid_twoYears(spark_session, carrier_input_schema, carrier_output_schema):
     # given
     ''' INPUT DATAFRAME
@@ -75,7 +75,7 @@ def test_processYearRange_valid_twoYears(spark_session, carrier_input_schema, ca
     assert_dataframes_equal(expected_df, actual_df)
 
 
-@pytest.mark.skip()
+# @pytest.mark.skip()
 def test_processYearRange_valid_missingYears(spark_session, carrier_input_schema, carrier_output_schema):
     # given
     ''' INPUT DATAFRAME
@@ -117,7 +117,7 @@ def test_processYearRange_valid_missingYears(spark_session, carrier_input_schema
     assert_dataframes_equal(expected_df, actual_df)
 
 
-@pytest.mark.skip()
+# @pytest.mark.skip()
 def test_processYearRange_invalid_cannotParse(spark_session, carrier_input_schema, carrier_output_schema):
     # given
     ''' INPUT DATAFRAME
